@@ -56,10 +56,8 @@ export default function RSVPModal({ open, setOpen }) {
 
   return (
     <Dialog open={open} onClose={handleClose} className="modal">
-      <div className="modal-backdrop" />
-
       <div className="modal-container">
-        <Dialog.Panel className="modal-panel">
+        <div className="modal-panel">
           <h2 className="modal-title">Cookie Decorating RSVP 🍪</h2>
 
           <div className="modal-group">
@@ -109,9 +107,6 @@ export default function RSVPModal({ open, setOpen }) {
               value={kits}
               onChange={(e) => setKits(e.target.value)}
             />
-            <p className="modal-helper">
-              Decorate at home with icing & sprinkles 💕
-            </p>
           </div>
 
           <p className="modal-total">Total: ${total}</p>
@@ -129,7 +124,7 @@ export default function RSVPModal({ open, setOpen }) {
           <button className="modal-close" onClick={handleClose}>
             Close
           </button>
-        </Dialog.Panel>
+        </div>
       </div>
     </Dialog>
   );
