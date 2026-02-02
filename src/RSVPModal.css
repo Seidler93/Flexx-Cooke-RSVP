@@ -140,6 +140,23 @@
   background: #9e2f23;
 }
 
+.modal-label-error {
+  color: #e53935;
+  font-weight: 700;
+}
+
+.modal-input-error {
+  border: 2px solid #e53935 !important;
+  background: #fff5f5 !important;
+  outline: none !important;
+}
+
+.modal-input-error:focus {
+  border-color: #e53935 !important;
+  box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.25) !important;
+}
+
+
 /* Animation */
 @keyframes fadeIn {
   from {
@@ -151,3 +168,5 @@
     transform: scale(1);
   }
 }
+
+

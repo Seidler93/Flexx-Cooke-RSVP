@@ -10,22 +10,25 @@ export default function RSVPModal({ open, setOpen }) {
   const [trays, setTrays] = useState(0);
   const [kits, setKits] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [nameError, setNameError] = useState(false);
 
   const TRAY_PRICE = 30;
   const KIT_PRICE = 30;
 
-  const total =
-    Number(trays) * TRAY_PRICE +
-    Number(kits) * KIT_PRICE;
+  const total = Number(trays) * TRAY_PRICE + Number(kits) * KIT_PRICE;
 
   async function handleSubmit() {
-    if (!name) return;
+    if (!name.trim()) {
+      setNameError(true);
+      return;
+    }
 
+    setNameError(false);
     setLoading(true);
 
     try {
       await addDoc(collection(db, "cookieRSVPs"), {
-        name,
+        name: name.trim(),
         people: Number(people),
         trays: Number(trays),
         kits: Number(kits),
@@ -37,16 +40,22 @@ export default function RSVPModal({ open, setOpen }) {
       setOpen(false);
       setName("");
       setPeople(1);
-      setTrays(1);
+      setTrays(0);
       setKits(0);
+      setNameError(false);
     } catch (err) {
       console.error(err);
       setLoading(false);
     }
   }
 
+  function handleClose() {
+    setOpen(false);
+    setNameError(false);
+  }
+
   return (
-    <Dialog open={open} onClose={() => setOpen(false)} className="modal">
+    <Dialog open={open} onClose={handleClose} className="modal">
       <div className="modal-backdrop" />
 
       <div className="modal-container">
@@ -54,12 +63,18 @@ export default function RSVPModal({ open, setOpen }) {
           <h2 className="modal-title">Cookie Decorating RSVP 🍪</h2>
 
           <div className="modal-group">
-            <label>Your Name</label>
+            <label className={nameError ? "modal-label-error" : ""}>
+              Your Name
+            </label>
+
             <input
-              className="modal-input"
+              className={`modal-input ${nameError ? "modal-input-error" : ""}`}
               placeholder="Enter your name"
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => {
+                setName(e.target.value);
+                if (nameError && e.target.value.trim()) setNameError(false);
+              }}
             />
           </div>
 
@@ -79,7 +94,7 @@ export default function RSVPModal({ open, setOpen }) {
             <input
               className="modal-input"
               type="number"
-              min="1"
+              min="0"
               value={trays}
               onChange={(e) => setTrays(e.target.value)}
             />
@@ -99,26 +114,19 @@ export default function RSVPModal({ open, setOpen }) {
             </p>
           </div>
 
-          <p className="modal-total">
-            Total: ${total}
-          </p>
+          <p className="modal-total">Total: ${total}</p>
 
-          <p className="modal-info-text">
-            Pay at the gym via Zelle, Venmo, or Cash
-          </p>
+          <p className="modal-info-text">Pay at the gym via Zelle, Venmo, or Cash</p>
 
           <button
-            disabled={loading || !name}
+            disabled={loading}
             className="modal-submit"
             onClick={handleSubmit}
           >
             {loading ? "Submitting..." : "Submit RSVP"}
           </button>
 
-          <button
-            className="modal-close"
-            onClick={() => setOpen(false)}
-          >
+          <button className="modal-close" onClick={handleClose}>
             Close
           </button>
         </Dialog.Panel>
